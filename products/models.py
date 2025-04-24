@@ -88,7 +88,7 @@ class Product(TimeStampedModel):
     # product options
     subcategory = models.ManyToManyField(
         SubCategory, blank=True, related_name="products")
-    stock = models.PositiveIntegerField(default=0)
+    base_stock = models.PositiveIntegerField(default=0)
     active = models.BooleanField(default=False)
     manufacturer = models.CharField(max_length=250)
     featured = models.BooleanField(default=False)
@@ -128,6 +128,9 @@ class VariantOptions(TimeStampedModel):
     variant = models.ForeignKey(
         Variant, on_delete=models.CASCADE, related_name="variant_options")
     name = models.CharField(max_length=100, unique=True)
+    stock = models.PositiveIntegerField(default=0)
+    image = models.ImageField(
+        upload_to='products/variants/%Y/%m/%d/')
 
     def __str__(self):
         return f"{self.variant.name} - Options"  # pylint: disable=no-member
