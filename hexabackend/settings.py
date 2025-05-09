@@ -12,9 +12,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env/.env.dev'))
 
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 
-DEBUG = bool(os.environ.get("DEBUG", default=0))
+DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 
-ALLOWED_HOSTS = os.environ.get("DJ_ALLOWED_HOSTS", "127.0.0.1").split(",")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
 
 
 PROJECT_APPS = ['core', 'users', 'products', 'orders', 'reviews']
