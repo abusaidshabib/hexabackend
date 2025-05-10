@@ -17,10 +17,14 @@ class RegisterAPIView(APIView):
             if serializer.is_valid():
                 user = serializer.save()
                 response_serializer = UserRegisterSerializer(user)
+                refresh = RefreshToken.for_user(user)
+
                 return Response({
                     "success": True,
                     "message": "User creation done",
-                    "data": response_serializer.data
+                    "data": response_serializer.data,
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
                 }, status=status.HTTP_201_CREATED)
 
             # ⚠️ Must return this if serializer is not valid
@@ -57,7 +61,7 @@ class RegisterAPIView(APIView):
 class LoginAPIView(APIView):
     def post(self, request, format=None):
         serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid():
+        if not serializer.is_valid():
             return Response(
                 {"success": False, "message": "Invalid credentials",
                  "errors": serializer.errors},
@@ -74,7 +78,7 @@ class LoginAPIView(APIView):
             "access": str(refresh.access_token),
             "user": {
                 'id': user.id,
-                'username': user.username,
+                # 'username': user.username,
                 'email': user.email
             }
         }, status=status.HTTP_200_OK)

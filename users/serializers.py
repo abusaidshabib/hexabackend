@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers
 
@@ -30,17 +31,32 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-class UserLoginSerializer(serializers.ModelSerializer):
+class UserLoginSerializer(serializers.Serializer):
+    """User Login serializer"""
     email = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
+
+    def create(self, validated_data):
+        pass
+
+
+    def update(self, instance, validated_data):
+        pass
+
 
     def validate(self, attrs):
         email = attrs.get("email")
         password = attrs.get("password")
-        user = authenticate(user=email, password=password)
 
-        if not user:
-            raise serializers.ValidationError("Invalid email or password.")
+        try:
+            user = User.objects.get(email=email)
+        except ObjectDoesNotExist as exc:
+            raise serializers.ValidationError(
+                {"user": "User with this Email does not exist."}
+            ) from exc
+
+        if not user.check_password(password):
+            raise serializers.ValidationError({"invalid": "Invalid password."})
         if not user.is_active:
             raise serializers.ValidationError("User is not active.")
 
