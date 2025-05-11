@@ -15,6 +15,10 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://localhost:5174'
+]
 
 
 PROJECT_APPS = ['core', 'users', 'products', 'orders', 'reviews']
@@ -26,6 +30,7 @@ PACKAGE_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "rest_framework",
     'rest_framework_simplejwt',
 ]
@@ -33,6 +38,7 @@ PACKAGE_APPS = [
 INSTALLED_APPS = PROJECT_APPS + PACKAGE_APPS
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
